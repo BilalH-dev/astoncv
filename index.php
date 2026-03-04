@@ -15,11 +15,30 @@ function escapedString($string) {
 </head>
 <body>
     <h1>AstonCV</h1>
+    <form action="index.php" method="GET">
+        <input type="text" name="query" placeholder="Search CVs...">
+        <button type="submit">Search</button>
+    </form>
     <section id="cv-list">
         <h2>CV List</h2>
         <?php
-        $sql = "SELECT id, name, email, keyprogramming FROM cvs";
-        $result = $db->query($sql);
+        if (isset($_GET['query'])) {
+            $query = trim($_GET['query']);
+            if (!empty($query)) {
+                $query = '%' . $query . '%';
+                $sql = "SELECT id, name, email, keyprogramming FROM cvs WHERE name LIKE ? OR keyprogramming LIKE ?";
+                $result = $db -> prepare($sql);
+                $result -> execute([$query, $query]);
+            } else {
+                $sql = "SELECT id, name, email, keyprogramming FROM cvs";
+                $result = $db->query($sql);
+            }
+        } else {
+                $sql = "SELECT id, name, email, keyprogramming FROM cvs";
+                $result = $db->query($sql);
+        }
+            
+
         if ($result->rowCount() > 0) {
             echo "<table>
                     <tr>
