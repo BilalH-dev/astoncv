@@ -17,12 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["email"])) {
         $errors["email"] = "Email is required<br>";
         echo $errors["email"];
-    } else {
+    }
+        else {
         $email = validateData($_POST["email"]);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors["email"] = "Invalid email<br>";
+        // Check whether if email is already linked to an account
+        $checkEmailsql = "SELECT email FROM cvs WHERE email = ?";
+        $checkEmail = $db->prepare($checkEmailsql);
+        $checkEmail->execute([$email]);
+        if ($checkEmail->rowCount() != 0) {
+            $errors["email"] = "Email already exists<br>";
             echo $errors["email"];
-        }
     }
     if (empty($_POST["password"])) {
         $errors["password"] = "Password is required<br>";
@@ -73,6 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $register = $db -> prepare($sql);
     $register -> execute([$name, $email, $password, $keyprogramming, $profile, $education, $URLlinks]);
     echo "User created successfully";
+    http_response_code(201);
+    }
     }
 }
 
