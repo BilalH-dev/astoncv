@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $getUserId->execute([$email]);
                 $userId = $getUserId->fetchColumn();
                 $_SESSION["userid"] = $userId;
-                header("Location: profile.php");
+                header("Location: mycv.php");
             } else {
                 $errors["invalidpassword"] = "Your email address or password is incorrect";
                 echo $errors["invalidpassword"];
