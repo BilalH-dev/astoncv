@@ -2,6 +2,14 @@
 session_start();
 require("includes/db.php");
 
+function getRandomString($n) {
+    return bin2hex(random_bytes($n / 2));
+}
+
+if (!isset($_SESSION["csrf-token"])) {
+    $_SESSION["csrf-token"] = getRandomString(10);
+}
+
 function escapedString($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
@@ -31,6 +39,12 @@ $id = $_SESSION['userid'];
 $name = $email = $keyprogramming = $profile = $education = $URLlinks = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST["csrf-token"]) || $_POST["csrf-token"] != $_SESSION["csrf-token"]) {
+        $errors["misc"] = "An unexpected error occurred. Please try again.";
+        http_response_code(403);
+        echo $errors["misc"];
+        exit();
+    }
     if (empty($_POST["name"])) {
         $errors["name"] = "Name is required<br>";
         echo $errors["name"];
@@ -53,7 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($checkEmail->rowCount() != 0) {
             $errors["email"] = "Email is already associated with another account";
             echo $errors["email"];
-    }
+            }
+        }
     if (empty($_POST["keyprogramming"])) {
         $errors["keyprogramming"] = "Key programming language is required<br>";
         echo $errors["keyprogramming"];
@@ -92,13 +107,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($errors)) {
-    $sql = "UPDATE cvs SET name=?, email=?, keyprogramming=?, profile=?, education=?, URLlinks=? WHERE id=?";
-    $editCv = $db -> prepare($sql);
-    $editCv -> execute([$name, $email, $keyprogramming, $profile, $education, $URLlinks, $id]);
-    header("Location: mycv.php");
+        $sql = "UPDATE cvs SET name=?, email=?, keyprogramming=?, profile=?, education=?, URLlinks=? WHERE id=?";
+        $editCv = $db -> prepare($sql);
+        $editCv -> execute([$name, $email, $keyprogramming, $profile, $education, $URLlinks, $id]);
+        header("Location: mycv.php");
+        exit();
         }
     }
-}
 ?>
 
 
@@ -120,5 +135,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
      <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."><?php echo escapedString($cv['education']); ?></textarea><br>
     <label for="links">URLs:</label> 
      <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."><?php echo escapedString($cv['URLlinks']); ?></textarea><br><br>
+     <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
     <input type="submit" value="Update CV"> 
 </form>

@@ -2,10 +2,24 @@
 session_start();
 require("includes/db.php");
 
+function getRandomString($n) {
+    return bin2hex(random_bytes($n / 2));
+}
+
+if (!isset($_SESSION["csrf-token"])) {
+    $_SESSION["csrf-token"] = getRandomString(10);
+}
+
 $errors = [];
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST["csrf-token"]) || $_POST["csrf-token"] != $_SESSION["csrf-token"]) {
+        $errors["misc"] = "An unexpected error occurred. Please try again.";
+        http_response_code(403);
+        echo $errors["misc"];
+        exit();
+    }
         if (empty($_POST["email"])) {
         $errors["email"] = "Email address is required";
         echo $errors["email"];
@@ -20,8 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = validateData($_POST["password"]);
     }
 
-    if (empty($emailError) && empty($passwordError)) {
-        $sql = "SELECT password FROM cvs WHERE email = ?";
+    if ($errors == []) {
+        $sql = "SELECT id, password FROM cvs WHERE email = ?";
         $login = $db->prepare($sql);
         $login->execute([$email]);
 
@@ -31,12 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo $errors["invaliduser"];
         } else {
             if (password_verify($password, $user["password"])) {
-                $getUserIdSql = "SELECT id FROM cvs WHERE email = ?";
-                $getUserId = $db->prepare($getUserIdSql);
-                $getUserId->execute([$email]);
-                $userId = $getUserId->fetchColumn();
-                $_SESSION["userid"] = $userId;
+                $_SESSION["userid"] = $user["id"];
                 header("Location: mycv.php");
+                exit();
             } else {
                 $errors["invalidpassword"] = "Your email address or password is incorrect";
                 echo $errors["invalidpassword"];
@@ -56,8 +67,9 @@ function validateData($data) {
 <br><br>
 <form action="login.php" method="post"> 
     <label for="email">Email Address:</label> 
-    <input type="text" id="email" name="email"><br><br>
+    <input type="email" id="email" name="email"><br><br>
     <label for="password">Password:</label> 
     <input type="password" id="password" name="password"><br><br> 
+    <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
     <input type="submit" value="Log In"> 
 </form>

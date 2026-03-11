@@ -1,10 +1,25 @@
 <?php
+session_start();
 require 'includes/db.php';
+
+function getRandomString($n) {
+    return bin2hex(random_bytes($n / 2));
+}
+
+if (!isset($_SESSION["csrf-token"])) {
+    $_SESSION["csrf-token"] = getRandomString(10);
+}
 
 $errors = [];
 $name = $email = $password = $keyprogramming = $profile = $education = $URLlinks = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST["csrf-token"]) || $_POST["csrf-token"] != $_SESSION["csrf-token"]) {
+        $errors["misc"] = "An unexpected error occurred. Please try again.";
+        http_response_code(403);
+        echo $errors["misc"];
+        exit();
+    }
     if (empty($_POST["name"])) {
         $errors["name"] = "Name is required<br>";
         echo $errors["name"];
@@ -27,7 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($checkEmail->rowCount() != 0) {
             $errors["email"] = "Email already exists<br>";
             echo $errors["email"];
-    }
+            }
+        }
     if (empty($_POST["password"])) {
         $errors["password"] = "Password is required<br>";
         echo $errors["password"];
@@ -76,9 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO cvs (name, email, password, keyprogramming, profile, education, URLlinks) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $register = $db -> prepare($sql);
     $register -> execute([$name, $email, $password, $keyprogramming, $profile, $education, $URLlinks]);
-    echo "User created successfully";
-    http_response_code(201);
-    }
+    $userId = $db->lastInsertId();
+    $_SESSION["userid"] = $userId;
+    header("Location: mycv.php");
+    exit();
     }
 }
 
@@ -108,5 +125,6 @@ function validateData($data) {
      <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."></textarea><br>
     <label for="links">URLs:</label> 
      <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."></textarea><br>
+     <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
     <input type="submit" value="Register"> 
 </form>
