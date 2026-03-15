@@ -1,5 +1,11 @@
 <?php
 require 'includes/db.php';
+session_start();
+if (isset($_SESSION['userid'])) {
+    require 'includes/header-user.php';
+} else {
+    require 'includes/header-guest.php';
+}
 
 function escapedString($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
@@ -7,14 +13,10 @@ function escapedString($string) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en-gb">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstonCV</title>
+    <title>AstonCV | Home</title>
 </head>
 <body>
-    <h1>AstonCV</h1>
     <form action="index.php" method="GET">
         <input type="text" name="query" placeholder="Search CVs...">
         <button type="submit">Search</button>
@@ -48,7 +50,7 @@ function escapedString($string) {
                     </tr>";
             while($row = $result->fetch()) {
                 echo "<tr>";
-                echo "<td><a href=view.php?id=". escapedString($row['id']) . ">" . escapedString($row['name']) . "</a></td>";
+                echo "<td><a href=viewcv.php?id=". escapedString($row['id']) . ">" . escapedString($row['name']) . "</a></td>";
                 echo "<td>" . escapedString($row['email']) . "</td>";
                 echo "<td>" . escapedString($row['keyprogramming']) . "</td>";
                 echo "</tr>";

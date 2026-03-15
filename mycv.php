@@ -1,19 +1,9 @@
 <?php
+require 'includes/db.php';
 session_start();
-require("includes/db.php");
-
-function escapedString($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
-
-if (!isset($_SESSION['userid'])) {
-    echo("You are not logged in.");
-    exit();
-}
-
-else {
+if (isset($_SESSION['userid'])) {
+    require 'includes/header-user.php';
     $userid = $_SESSION['userid'];
-    echo('<a href="index.php">Home</a> <a href="mycv.php">My CV</a> <a href="editcv.php">Edit CV</a> <a href="logout.php">Log Out</a>');
     echo('<h1>My CV</h1>You may find a full record of your CV below. <br> If anything is incorrect, you can edit it <a href="editcv.php">here</a>.');
     $sql = "SELECT id, name, email, keyprogramming, profile, education, URLlinks FROM cvs WHERE id = ?";
     $getCv = $db->prepare($sql);
@@ -26,5 +16,13 @@ else {
     echo "<p><b>Profile: </b>" . (escapedString($cv['profile']) . "</p>");
     echo "<p><b>Education: </b>" . (escapedString($cv['education']) . "</p>");
     echo "<p><b>URL Link: </b>" . (escapedString($cv['URLlinks']) . "</p>");
+}
+else {
+    header("Location: login.php");
+    exit();
+}
+
+function escapedString($string) {
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 ?>

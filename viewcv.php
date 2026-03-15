@@ -1,5 +1,11 @@
 <?php
 require 'includes/db.php';
+session_start();
+if (isset($_SESSION['userid'])) {
+    require 'includes/header-user.php';
+} else {
+    require 'includes/header-guest.php';
+}
 
 function escapedString($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
@@ -7,13 +13,9 @@ function escapedString($string) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en-gb">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstonCV - View CV</title>
+    <title>AstonCV | View CV</title>
 </head>
-<body>
     <h1>View CV</h1>
     <?php
     if (!isset($_GET['id'])) {

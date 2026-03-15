@@ -1,17 +1,21 @@
 <?php
+require 'includes/db.php';
+require 'includes/header-guest.php';
 session_start();
-require("includes/db.php"); ?>
+if (isset($_SESSION['userid'])) {
+    session_unset();
+    session_destroy();
+} else {
+    echo("You are not logged in.");
+    exit();
+}?>
 
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>AstonCV | Logout</title>
+    </head>
 <body>
-    <h1>AstonCV</h1>
     <p>You have been logged out successfully.</p>
-
-<?php
-session_unset();
-session_destroy();
-?>
-
 </body>
 </html>

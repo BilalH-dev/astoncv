@@ -1,0 +1,17 @@
+/* Navigation Bar Styles */
+nav {
+    color: #A626AA;
+    font-size: 36px;
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: inherit;
+}

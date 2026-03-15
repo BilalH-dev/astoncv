@@ -1,7 +1,17 @@
 <?php
+require 'includes/db.php';
 session_start();
-require("includes/db.php");
-
+if (isset($_SESSION['userid'])) {
+    require 'includes/header-user.php';
+    $userid = $_SESSION['userid'];
+    $sql = "SELECT id, name, email, keyprogramming, profile, education, URLlinks FROM cvs WHERE id = ?";
+    $getCv = $db->prepare($sql);
+    $getCv->execute([$userid]);
+    $cv = $getCv->fetch();
+} else {
+    header("Location: login.php");
+    exit();
+}
 function getRandomString($n) {
     return bin2hex(random_bytes($n / 2));
 }
@@ -17,21 +27,6 @@ function escapedString($string) {
 function validateData($data) {
     $data = trim($data);
     return $data;
-}
-
-if (!isset($_SESSION['userid'])) {
-    echo("You are not logged in.");
-    exit();
-}
-
-else {
-    $userid = $_SESSION['userid'];
-    echo('<a href="index.php">Home</a> <a href="mycv.php">My CV</a> <a href="editcv.php">Edit CV</a> <a href="logout.php">Log Out</a>');
-    echo("<h1>Edit CV</h1><p>Edit the information in your CV using the form below:</p>");
-    $sql = "SELECT id, name, email, keyprogramming, profile, education, URLlinks FROM cvs WHERE id = ?";
-    $getCv = $db->prepare($sql);
-    $getCv->execute([$userid]);
-    $cv = $getCv->fetch();
 }
 
 $errors = [];
@@ -116,25 +111,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 ?>
 
-
-<form action="editcv.php" method="post"> 
-    <label for="name">Name:</label> 
-    <input type="text" id="name" name="name" placeholder="Joe Bloggs" value="<?php echo escapedString($cv['name']); ?>" required><br>
-    <br>
-    <label for="email">Email:</label> 
-    <input type="email" id="email" name="email" placeholder="joebloggs12@example.com" value="<?php echo escapedString($cv['email']); ?>" required><br>
-    <br>
-    <!-- Implement change password functionality -->
-    <label for="keyprogramming">Key Programming Language:</label> 
-    <input type="text" id="keyprogramming" name="keyprogramming" placeholder="Python" value="<?php echo escapedString($cv['keyprogramming']); ?>" required><br>
-    <br>
-    <label for="profile">Profile:</label> 
-    <textarea id="profile" name="profile" rows="4" cols="50" placeholder="Put information about yourself here..."><?php echo escapedString($cv['profile']); ?></textarea><br>
-    <br>
-    <label for="education">Education:</label> 
-     <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."><?php echo escapedString($cv['education']); ?></textarea><br>
-    <label for="links">URLs:</label> 
-     <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."><?php echo escapedString($cv['URLlinks']); ?></textarea><br><br>
-     <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
-    <input type="submit" value="Update CV"> 
-</form>
+<!DOCTYPE html>
+<head>
+    <title>AstonCV | Edit CV</title>
+</head>
+<body>
+    <h1>Edit CV</h1>
+    <p>Edit the information in your CV using the form below:</p>
+    <form action="editcv.php" method="post"> 
+        <label for="name">Name:</label> 
+        <input type="text" id="name" name="name" placeholder="Joe Bloggs" value="<?php echo escapedString($cv['name']); ?>" required><br>
+        <br>
+        <label for="email">Email:</label> 
+        <input type="email" id="email" name="email" placeholder="joebloggs12@example.com" value="<?php echo escapedString($cv['email']); ?>" required><br>
+        <br>
+        <!-- Implement change password functionality -->
+        <label for="keyprogramming">Key Programming Language:</label> 
+        <input type="text" id="keyprogramming" name="keyprogramming" placeholder="Python" value="<?php echo escapedString($cv['keyprogramming']); ?>" required><br>
+        <br>
+        <label for="profile">Profile:</label> 
+        <textarea id="profile" name="profile" rows="4" cols="50" placeholder="Put information about yourself here..."><?php echo escapedString($cv['profile']); ?></textarea><br>
+        <br>
+        <label for="education">Education:</label> 
+        <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."><?php echo escapedString($cv['education']); ?></textarea><br>
+        <label for="links">URLs:</label> 
+        <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."><?php echo escapedString($cv['URLlinks']); ?></textarea><br><br>
+        <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
+        <input type="submit" value="Update CV"> 
+    </form>
+</body>
+</html>

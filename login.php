@@ -1,6 +1,13 @@
 <?php
+require 'includes/db.php';
 session_start();
-require("includes/db.php");
+if (isset($_SESSION['userid'])) {
+    require 'includes/header-user.php';
+    echo 'You are already logged in. <a href="mycv.php">View your CV</a> or <a href="logout.php">log out</a>.';
+    exit();
+} else {
+    require 'includes/header-guest.php';
+}
 
 function getRandomString($n) {
     return bin2hex(random_bytes($n / 2));
@@ -62,14 +69,22 @@ function validateData($data) {
     return $data;
 } ?>
 
-<h1>AstonCV Login</h1>
-<a href="register.php">Register here if you do not have an account</a>
-<br><br>
-<form action="login.php" method="post"> 
-    <label for="email">Email Address:</label> 
-    <input type="email" id="email" name="email"><br><br>
-    <label for="password">Password:</label> 
-    <input type="password" id="password" name="password"><br><br> 
-    <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
-    <input type="submit" value="Log In"> 
-</form>
+<!DOCTYPE html>
+<head>
+    <title>AstonCV | Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <p>Log in to your account to view and edit your CV.</p>
+    <p><em>Don't have an account?</em> <a href="register.php"><b>Register here</b></a>.</p>
+    <br>
+    <form action="login.php" method="post"> 
+        <label for="email">Email Address:</label> 
+        <input type="email" id="email" name="email"><br><br>
+        <label for="password">Password:</label> 
+        <input type="password" id="password" name="password"><br><br> 
+        <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
+        <input type="submit" value="Log In"> 
+    </form>
+</body>
+</html>
