@@ -1,6 +1,12 @@
 <?php
-session_start();
 require 'includes/db.php';
+session_start();
+if (isset($_SESSION['userid'])) {
+    header("Location: mycv.php");
+    exit();
+} else {
+    require 'includes/header-guest.php';
+}
 
 function getRandomString($n) {
     return bin2hex(random_bytes($n / 2));

@@ -6,7 +6,7 @@ if (isset($_SESSION['userid'])) {
     session_unset();
     session_destroy();
 } else {
-    echo("You are not logged in.");
+    header("Location: login.php");
     exit();
 }?>
 

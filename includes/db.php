@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "astoncv";
+$dbname = "astoncv_prod";
 
 try {
     $db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);

@@ -2,8 +2,7 @@
 require 'includes/db.php';
 session_start();
 if (isset($_SESSION['userid'])) {
-    require 'includes/header-user.php';
-    echo 'You are already logged in. <a href="mycv.php">View your CV</a> or <a href="logout.php">log out</a>.';
+    header("Location: mycv.php");
     exit();
 } else {
     require 'includes/header-guest.php';
