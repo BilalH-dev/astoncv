@@ -18,13 +18,12 @@ nav a {
 
 /* Indent content from left of page */
 .main {
-    margin-left: 15%;
+    margin-left: 11%;
 }
 
 /* Table Styles */
 table {
-    font-family: 'Arial', 'Helvetica', sans-serif;
-    width: 80%;
+    width: 90%;
 }
 
 th {
@@ -43,7 +42,6 @@ tr:nth-child(even) {
 
 /* Link Styles */
 a {
-    font-family: 'Arial', 'Helvetica', sans-serif;
     text-decoration: none;
     color: #A626AA;
 }
@@ -55,4 +53,24 @@ a:hover {
 #back-to-list {
     font-weight: bold;
     font-size: 20px;
+}
+
+/* Asterisk Style */
+.asterisk {
+        color: red;
+    }
+
+/* Error Section Styles */
+#error-section {
+    width: 90%;
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F5C6CB;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.error-title {
+    font-weight: bold;
+    font-size: 18px;
 }
