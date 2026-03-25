@@ -1,0 +1,58 @@
+/* Navigation Bar Styles */
+nav {
+    color: #A626AA;
+    font-size: 36px;
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Indent content from left of page */
+.main {
+    margin-left: 15%;
+}
+
+/* Table Styles */
+table {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    width: 80%;
+}
+
+th {
+    background-color: #A626AA;
+    color: white;
+}
+
+tr, th, td {
+    border-collapse: collapse;
+    padding: 15px;
+}
+
+tr:nth-child(even) {
+    background-color: lightgray;
+}
+
+/* Link Styles */
+a {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    text-decoration: none;
+    color: #A626AA;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#back-to-list {
+    font-weight: bold;
+    font-size: 20px;
+}

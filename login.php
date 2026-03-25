@@ -70,20 +70,29 @@ function validateData($data) {
 
 <!DOCTYPE html>
 <head>
+    <html lang="en-gb">
     <title>AstonCV | Login</title>
+    <link rel="stylesheet" type="text/css" href="assets/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    </head>
 </head>
 <body>
-    <h1>Login</h1>
-    <p>Log in to your account to view and edit your CV.</p>
-    <p><em>Don't have an account?</em> <a href="register.php"><b>Register here</b></a>.</p>
-    <br>
-    <form action="login.php" method="post"> 
-        <label for="email">Email Address:</label> 
-        <input type="email" id="email" name="email"><br><br>
-        <label for="password">Password:</label> 
-        <input type="password" id="password" name="password"><br><br> 
-        <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
-        <input type="submit" value="Log In"> 
-    </form>
+    <section class="main">
+        <h1>Login</h1>
+        <p>Log in to your account to view and edit your CV.</p>
+        <p><em>Don't have an account?</em> <a href="register.php"><b>Register here</b></a>.</p>
+        <br>
+        <form action="login.php" method="post"> 
+            <label for="email">Email Address:</label> 
+            <input type="email" id="email" name="email"><br><br>
+            <label for="password">Password:</label> 
+            <input type="password" id="password" name="password"><br><br> 
+            <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
+            <input type="submit" value="Log In"> 
+        </form>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

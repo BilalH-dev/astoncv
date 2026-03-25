@@ -113,41 +113,50 @@ function validateData($data) {
 <!DOCTYPE html>
 <html lang="en-gb">
 <head>
+    <html lang="en-gb">
     <title>AstonCV | Register</title>
+    <link rel="stylesheet" type="text/css" href="assets/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
         .asterisk {
             color: red;
         }
     </style>
+    </head>
 </head>
 <body>
-    <h1>Register</h1>
-    <p>You can create an account here to create and manage your CV.</p>
-    <p><em>Required fields are marked with an asterisk (<span class="asterisk">*</span>).</em></p>
-    <p><em>Already have an account?</em> <a href="login.php"><b>Log in here</b></a>.</p>
-    <br>
-    <form action="register.php" method="post"> 
-        <label for="name">Name:</label> <span class="asterisk">*</span>
-        <input type="text" id="name" name="name" placeholder="Joe Bloggs" required><br>
+    <section class="main">
+        <h1>Register</h1>
+        <p>You can create an account here to create and manage your CV.<br><em>Required fields are marked with an asterisk (<span class="asterisk">*</span>).</em></p>
+        <p><em>Already have an account?</em> <a href="login.php"><b>Log in here</b></a>.</p>
         <br>
-        <label for="email">Email:</label> <span class="asterisk">*</span>
-        <input type="email" id="email" name="email" placeholder="joebloggs12@example.com" required><br>
-        <br>
-        <label for="password">Password:</label> <span class="asterisk">*</span>
-        <input type="password" id="password" name="password" required><br>
-        <br>
-        <label for="keyprogramming">Key Programming Language:</label> <span class="asterisk">*</span>
-        <input type="text" id="keyprogramming" name="keyprogramming" placeholder="Python" required><br>
-        <br>
-        <label for="profile">Profile:</label> 
-        <textarea id="profile" name="profile" rows="4" cols="50" placeholder="Put information about yourself here..."></textarea><br>
-        <br>
-        <label for="education">Education:</label> 
-        <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."></textarea><br>
-        <label for="links">URLs:</label> 
-        <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."></textarea><br>
-        <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
-        <input type="submit" value="Register"> 
-    </form>
+        <form action="register.php" method="post"> 
+            <label for="name">Name:</label> <span class="asterisk">*</span>
+            <input type="text" id="name" name="name" placeholder="Joe Bloggs" required><br>
+            <br>
+            <label for="email">Email:</label> <span class="asterisk">*</span>
+            <input type="email" id="email" name="email" placeholder="joebloggs12@example.com" required><br>
+            <br>
+            <label for="password">Password:</label> <span class="asterisk">*</span>
+            <input type="password" id="password" name="password" required><br>
+            <br>
+            <label for="keyprogramming">Key Programming Language:</label> <span class="asterisk">*</span>
+            <input type="text" id="keyprogramming" name="keyprogramming" placeholder="Python" required><br>
+            <br>
+            <label for="profile">Profile:</label> 
+            <textarea id="profile" name="profile" rows="4" cols="50" placeholder="Put information about yourself here..."></textarea><br>
+            <br>
+            <label for="education">Education:</label> 
+            <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."></textarea><br>
+            <br>
+            <label for="links">URLs:</label> 
+            <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."></textarea><br>
+            <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
+            <input type="submit" value="Register"> 
+        </form>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
