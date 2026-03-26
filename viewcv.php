@@ -1,10 +1,7 @@
 <?php
 require 'includes/db.php';
+require 'includes/functions.php';
 session_start();
-
-function escapedString($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +25,7 @@ function escapedString($string) {
     <section class="main">
     <h1>View CV Details</h1>
     <?php
+    // Validate CV ID, display error if CV ID is not provided or invalid
     if (!isset($_GET['id'])) {
         echo("<p>No CV specified<br>Please go back to the CV list and try again.<br><br></p>");
         echo ('<a id="back-to-list" href="index.php">Back to CV List</a>');
@@ -42,12 +40,14 @@ function escapedString($string) {
          exit();
     }
     else {
+        // Retrieve CV information from database
         $cvId = $_GET['id']; 
     }
 
     $sql = "SELECT name, email, keyprogramming, profile, education, URLlinks FROM cvs WHERE id = ?";
     $result = $db->prepare($sql);
     $result->execute([$cvId]);
+    // If CV ID is valid but CV is not found, display error message
     if (!$cv = $result->fetch()) {
             echo("<p>CV not found</p><br>");
             echo ('<a id="back-to-list" href="index.php">Back to CV List</a>');

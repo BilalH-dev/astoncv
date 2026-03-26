@@ -1,11 +1,13 @@
 <?php
 require 'includes/db.php';
-require 'includes/header-guest.php';
 session_start();
+
+// Check whether user is logged in, redirect to login page if not
 if (!isset($_SESSION['userid'])) {
     header("Location: login.php");
     exit();
 } else {
+    // Log out the user by clearing the session and redirecting to home page
     session_unset();
     session_destroy();
     header("refresh:3; url=index.php");
@@ -22,6 +24,10 @@ if (!isset($_SESSION['userid'])) {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     </head>
     <body>
+        <header>
+        <?php
+        include 'includes/header-guest.php';
+        ?>
         <h1>Logout</h1>
         <p>You have been logged out successfully.</p>
         <p>Redirecting you to the <a href="index.php">home page</a>...</p>

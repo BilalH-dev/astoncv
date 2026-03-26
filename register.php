@@ -1,17 +1,15 @@
 <?php
 require 'includes/db.php';
+require 'includes/functions.php';
 session_start();
+
+// Redirect to CV page if user is already logged in
 if (isset($_SESSION['userid'])) {
     header("Location: mycv.php");
     exit();
-} else {
-    require 'includes/header-guest.php';
 }
 
-function getRandomString($n) {
-    return bin2hex(random_bytes($n / 2));
-}
-
+// Generate CSRF token if it doesn't exist
 if (!isset($_SESSION["csrf-token"])) {
     $_SESSION["csrf-token"] = getRandomString(10);
 }
@@ -19,25 +17,23 @@ if (!isset($_SESSION["csrf-token"])) {
 $errors = [];
 $name = $email = $password = $keyprogramming = $profile = $education = $URLlinks = "";
 
+// Registration form submission logic
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST["csrf-token"]) || $_POST["csrf-token"] != $_SESSION["csrf-token"]) {
-        $errors["misc"] = "An unexpected error occurred. Please try again.";
+        $errors["misc"] = "<b>Unexpected error:</b> An unexpected error occurred. Please try again.";
         http_response_code(403);
-        echo $errors["misc"];
-        exit();
     }
     if (empty($_POST["name"])) {
-        $errors["name"] = "Name is required<br>";
-        echo $errors["name"];
+        $errors["name"] = "<b>Name:</b> Name is required";
     } else {
         $name = validateData($_POST["name"]);
         if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
-            $errors["name"] = "Name must only contain letters and whitespace<br>";
-            echo $errors["name"];
-    } }
+            $errors["name"] = "<b>Invalid name:</b> Name must only contain letters and whitespace";
+    } 
+    
+    }
     if (empty($_POST["email"])) {
-        $errors["email"] = "Email is required<br>";
-        echo $errors["email"];
+        $errors["email"] = "<b>Email:</b> Email is required";
     }
         else {
         $email = validateData($_POST["email"]);
@@ -46,20 +42,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $checkEmail = $db->prepare($checkEmailsql);
         $checkEmail->execute([$email]);
         if ($checkEmail->rowCount() != 0) {
-            $errors["email"] = "Email already exists<br>";
-            echo $errors["email"];
+            $errors["email"] = "<b>Invalid email:</b> An account with this email already exists";
             }
         }
     if (empty($_POST["password"])) {
-        $errors["password"] = "Password is required<br>";
-        echo $errors["password"];
+        $errors["password"] = "<b>Password:</b> Password is required";
     } else {
         $password = validateData($_POST["password"]);
         $password = password_hash($password, PASSWORD_DEFAULT);
     }
     if (empty($_POST["keyprogramming"])) {
-        $errors["keyprogramming"] = "Key programming language is required<br>";
-        echo $errors["keyprogramming"];
+        $errors["keyprogramming"] = "<b>Key programming language:</b> Key programming language is required";
     } else {
         $keyprogramming = validateData($_POST["keyprogramming"]);
     }
@@ -67,8 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $profile = "";
     }
     elseif ((strlen($_POST["profile"])) > 500) {
-        $errors["profile"] = "Profile text must be less than 500 characters<br>";
-        echo $errors["profile"];
+        $errors["profile"] = "<b>Invalid profile:</b> Profile text must be less than 500 characters";
     }
     else {
         $profile = validateData($_POST["profile"]);
@@ -77,8 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $education = "";
     }
     elseif ((strlen($_POST["education"])) > 500) {
-        $errors["education"] = "Education text must be less than 500 characters<br>";
-        echo $errors["education"];
+        $errors["education"] = "<b>Invalid education:</b> Education text must be less than 500 characters";
     }
     else {
         $education = validateData($_POST["education"]);
@@ -87,27 +78,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $URLlinks = "";
     }
     elseif ((strlen($_POST["links"])) > 500) {
-        $errors["links"] = "Links field must be less than 500 characters<br>";
-        echo $errors["links"];
+        $errors["links"] = "<b>Invalid links:</b> Links field must be less than 500 characters";
     }
     else {
         $URLlinks = validateData($_POST["links"]);
     }
 
+    // Create the user account if there are no errors in the submission
     if (empty($errors)) {
     $sql = "INSERT INTO cvs (name, email, password, keyprogramming, profile, education, URLlinks) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $register = $db -> prepare($sql);
     $register -> execute([$name, $email, $password, $keyprogramming, $profile, $education, $URLlinks]);
+    // Get the user ID of the newly created account, store it in the session variable and redirect to CV page
     $userId = $db->lastInsertId();
     $_SESSION["userid"] = $userId;
     header("Location: mycv.php");
     exit();
     }
-}
-
-function validateData($data) {
-    $data = trim($data);
-    return $data;
 } ?>
 
 <!DOCTYPE html>
@@ -120,35 +107,53 @@ function validateData($data) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     </head>
-</head>
 <body>
+    <header>
+    <?php
+    include 'includes/header-guest.php';
+    ?>
+    </header>
     <section class="main">
         <h1>Register</h1>
         <p>You can create an account here to create and manage your CV.<br><em>Required fields are marked with an asterisk (<span class="asterisk">*</span>).</em></p>
         <p><em>Already have an account?</em> <a href="login.php"><b>Log in here</b></a>.</p>
-        <br>
+        <?php
+        // Display errors if there are any
+        if (!empty($errors)) {
+            echo "<section id='error-section'>";
+            echo "<p class='error-title'>There were errors with your submission and your account was not created, please correct the errors below:</p>";
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li>" . $error . "</li>";
+                }
+            echo "</ul>";
+            echo "</section>";
+        }
+        ?>
         <form action="register.php" method="post"> 
-            <label for="name">Name:</label> <span class="asterisk">*</span>
-            <input type="text" id="name" name="name" placeholder="Joe Bloggs" required><br>
+            <h2>Core Information</h2>
+            <label for="name">Name: <span class="asterisk">*</span></label> 
+            <input type="text" size="49" id="name" name="name" placeholder="Joe Bloggs" title="Full Name" required><br>
             <br>
             <label for="email">Email:</label> <span class="asterisk">*</span>
-            <input type="email" id="email" name="email" placeholder="joebloggs12@example.com" required><br>
+            <input type="email" size="50" id="email" name="email" placeholder="joebloggs12@example.com" title="Email Address" required><br>
             <br>
             <label for="password">Password:</label> <span class="asterisk">*</span>
-            <input type="password" id="password" name="password" required><br>
+            <input type="password" size="46" id="password" name="password" title="Password" required><br>
             <br>
             <label for="keyprogramming">Key Programming Language:</label> <span class="asterisk">*</span>
-            <input type="text" id="keyprogramming" name="keyprogramming" placeholder="Python" required><br>
+            <input type="text" size="28" id="keyprogramming" name="keyprogramming" title="Key Programming Language (e.g., Python, Java, C++)"placeholder="Python" required><br>
             <br>
-            <label for="profile">Profile:</label> 
-            <textarea id="profile" name="profile" rows="4" cols="50" placeholder="Put information about yourself here..."></textarea><br>
+            <h2 for="profile">Profile</h2> 
+            <textarea id="profile" name="profile" rows="4" cols="100" placeholder="Put information about yourself here..." title="Profile information"></textarea><br>
             <br>
-            <label for="education">Education:</label> 
-            <textarea id="education" name="education" rows="4" cols="50" placeholder="List your education details..."></textarea><br>
+            <h2 for="education">Education</h2> 
+            <textarea id="education" name="education" rows="4" cols="100" placeholder="List your education details..." title="Education information"></textarea><br>
             <br>
-            <label for="links">URLs:</label> 
-            <textarea id="links" name="links" rows="4" cols="50" placeholder="Provide some URLs where people can learn more about you..."></textarea><br>
+            <h2 for="links">Links (URLs)</h2> 
+            <textarea id="links" name="links" rows="4" cols="100" placeholder="Provide some links where people can learn more about you..." title="URLs"></textarea><br>
             <input type="hidden" name="csrf-token" value="<?php echo $_SESSION['csrf-token'] ?? '' ?>">
+            <br>
             <input type="submit" value="Register"> 
         </form>
     </section>

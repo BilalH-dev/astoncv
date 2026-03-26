@@ -1,10 +1,7 @@
 <?php
 require 'includes/db.php';
+require 'includes/functions.php';
 session_start();
-
-function escapedString($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +16,7 @@ function escapedString($string) {
 <body>
     <header>
         <?php
+        // Show header based on user login status
         if (isset($_SESSION['userid'])) {
             include 'includes/header-user.php';
         } else {
@@ -33,6 +31,7 @@ function escapedString($string) {
         </form>
         <br>
         <?php
+        // Display CVs based on search query
         if (isset($_GET['query'])) {
             $query = trim($_GET['query']);
             if (!empty($query)) {
@@ -40,6 +39,7 @@ function escapedString($string) {
                 $sql = "SELECT id, name, email, keyprogramming FROM cvs WHERE name LIKE ? OR keyprogramming LIKE ?";
                 $result = $db -> prepare($sql);
                 $result -> execute([$query, $query]);
+            // Display all CVs if search query is empty
             } else {
                 $sql = "SELECT id, name, email, keyprogramming FROM cvs";
                 $result = $db->query($sql);
@@ -65,6 +65,7 @@ function escapedString($string) {
             echo "</table>";
             unset($result);
         }
+        // Display message if no CVs are found
         else {
             echo "No records found.";
         }

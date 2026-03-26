@@ -1,6 +1,9 @@
 <?php
 require 'includes/db.php';
+require 'includes/functions.php';
 session_start();
+
+// Check if user is logged in and retrieve CV information
 if (isset($_SESSION['userid'])) {
     $userid = $_SESSION['userid'];
     $sql = "SELECT id, name, email, keyprogramming, profile, education, URLlinks FROM cvs WHERE id = ?";
@@ -9,14 +12,10 @@ if (isset($_SESSION['userid'])) {
     $cv = $getCv->fetch();
 }
 else {
+    // Redirect to login page if user is not logged in
     header("Location: login.php");
     exit();
-}
-
-function escapedString($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
-?>
+} ?>
 
 <!DOCTYPE html>
 <html>
