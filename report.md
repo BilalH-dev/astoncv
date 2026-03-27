@@ -4,8 +4,8 @@
 ## Student ID Number: 250227688
 
 ## Basic information
-- **Website URL:** http://250227688.cs2410-web01pvm.aston.ac.uk/
-- **Source code link (optional):** https://github.com/BilalH-dev/astoncv/
+- **Website URL:** [http://250227688.cs2410-web01pvm.aston.ac.uk](http://250227688.cs2410-web01pvm.aston.ac.uk/)
+- **Source code link:** [https://github.com/BilalH-dev/astoncv](https://github.com/BilalH-dev/astoncv/)
 - **One registered user account:** 
     - **Username/Email address:** ```james.walker@example.com```
     - **Password:** ```Ast0nC7!123```
@@ -20,7 +20,7 @@ Whilst the system does not use a full Model View Controller (MVC) or an object-o
 | Functions                                                                  | Main Source File(s) | Working (yes/no) | Notes |
 |----------------------------------------------------------------------------|---------------------|------------------|-------|
 | **P1.** View the basic information of all CVS                                  | index.php       | Yes              |       |
-| **P2.** Click one CV in the list to view the CV details                        | index.php <br> viewcv.php | Yes        |       |
+| **P2.** Click one CV in the list to view the CV details                        | index.php <br> viewcv.php | Yes    |       |
 | **P3.** Search all CVs using first name, last name or key programming language | index.php       | Yes              |       |
 | **P4.** Register to become a registered user                                   | register.php    | Yes              |       | 
 
