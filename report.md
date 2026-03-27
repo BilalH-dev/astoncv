@@ -1,6 +1,6 @@
 # DG1IAD Portfolio 3 Report
 
-## Name: Bilal Haq  
+## Name: Mohammed Bilal Haq  
 ## Student ID Number: 250227688
 
 ## Basic information
@@ -41,3 +41,9 @@ Whilst the system does not use a full Model View Controller (MVC) or an object-o
 | HTML sanitisation | index.php <br> viewcv.php <br> mycv.php <br> functions.php | If a user has put HTML elements in any part of their profile, they have no effect on the website (i.e. they will be displayed in plain text). |
 | Storing hashed passwords | register.php <br> login.php <br> Database | When the user creates their account, the PHP script which handles validation and account creation will hash their password before storing it into the database. Upon login, the inputted password is compared against the hashed password. |
 | Cross-Site Request Forgery (CSRF) | register.php <br> login.php <br> editcv.php <br> functions.php | CSRF fields have been used on pages with forms to avoid unauthorised requests (particularly from outside of the website). |
+
+## Notes to Examiners
+- Favicon generated using [favicon.io](https://favicon.io/)
+- Favicon image source: Modified from [Aston University website](https://www.aston.ac.uk/themes/custom/aston_university/logo.svg)
+- Bootstrap source: [Get Bootstrap](https://getbootstrap.com/)
+- AI was used to generate CV information fields (i.e. name, profile, education etc)
